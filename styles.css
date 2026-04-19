@@ -1,0 +1,1085 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Roboto', Arial, sans-serif;
+  background: #0b2417;
+  color: #fff;
+}
+
+.page-background {
+  position: fixed;
+  inset: 0;
+  background: url('/PlantITa/huy-phan-2zITt_Sm9cs-unsplash.jpg') center center / cover no-repeat;
+  z-index: 0;
+  pointer-events: none;
+  transition: background-image 0.35s ease, transform 0.35s ease, filter 0.35s ease;
+}
+
+body.catalog-mode .page-background {
+  background-image: url('/PlantITa/huy-phan-2zITt_Sm9cs-unsplash-1.jpg');
+  filter: saturate(1.02) contrast(1.02);
+}
+
+.page-overlay {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.12), transparent 26%),
+    radial-gradient(circle at 78% 20%, rgba(223, 177, 96, 0.14), transparent 22%),
+    linear-gradient(rgba(6, 34, 21, 0.34), rgba(6, 34, 21, 0.58));
+  z-index: 0;
+  pointer-events: none;
+}
+
+body.catalog-mode .page-overlay {
+  background:
+    radial-gradient(circle at 18% 14%, rgba(255, 246, 248, 0.14), transparent 24%),
+    radial-gradient(circle at 82% 22%, rgba(232, 170, 189, 0.16), transparent 24%),
+    linear-gradient(rgba(7, 34, 24, 0.28), rgba(7, 34, 24, 0.54));
+}
+
+header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: rgba(232, 170, 189, 0.4);
+  color: #fff7fa;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 231, 238, 0.34);
+}
+
+.brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nav-btn {
+  border: none;
+  background: rgba(0, 77, 42, 0.18);
+  color: #004d2a;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+  background: #007a3f;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  background: rgba(246, 239, 230, 0.34);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
+  color: #1d2b22;
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.auth-layout {
+  margin: 1rem auto 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.25rem;
+}
+
+.feature-card {
+  flex: 0 1 620px;
+  max-width: 620px;
+  min-width: 0;
+  min-height: 100%;
+  padding: 1.8rem;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 24%),
+    linear-gradient(145deg, rgba(8, 58, 35, 0.78) 0%, rgba(0, 55, 29, 0.72) 58%, rgba(5, 38, 22, 0.76) 100%);
+  color: #f8f5ef;
+  display: grid;
+  gap: 1.2rem;
+}
+
+.auth-card {
+  flex: 0 0 390px;
+  max-width: 390px;
+  width: 390px;
+  min-height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: center;
+  align-self: start;
+  background: rgba(232, 170, 189, 0.46);
+  border: 1px solid rgba(255, 230, 238, 0.4);
+  box-shadow: 0 20px 46px rgba(95, 32, 53, 0.22);
+  backdrop-filter: blur(18px);
+}
+
+.feature-copy h2 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2rem, 3.5vw, 3.1rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.feature-copy p {
+  margin: 0;
+  max-width: 620px;
+  color: rgba(248, 245, 239, 0.88);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.hero-illustration {
+  position: relative;
+  min-height: 220px;
+  border-radius: 32px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(223, 177, 96, 0.22), transparent 22%),
+    radial-gradient(circle at 80% 18%, rgba(163, 214, 165, 0.14), transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(8, 60, 35, 0.38) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 24px 44px rgba(0, 0, 0, 0.18);
+}
+
+.hero-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(4px);
+}
+
+.hero-orb-left {
+  width: 180px;
+  height: 180px;
+  top: 22px;
+  left: 38px;
+  background: rgba(223, 177, 96, 0.22);
+}
+
+.hero-orb-right {
+  width: 140px;
+  height: 140px;
+  top: 30px;
+  right: 54px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hero-shelf {
+  position: absolute;
+  inset: auto 0 0;
+  height: 92px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2rem;
+  padding-bottom: 26px;
+  background: linear-gradient(180deg, transparent 0%, rgba(6, 35, 21, 0.2) 30%, rgba(6, 35, 21, 0.45) 100%);
+}
+
+.hero-shelf::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 18px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #dfb160 0%, #f0d49b 50%, #dfb160 100%);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
+}
+
+.pot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.pot::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  border-radius: 16px 16px 20px 20px;
+  background: linear-gradient(180deg, #f3d79c 0%, #c38d4d 100%);
+  box-shadow: inset 0 6px 8px rgba(255, 255, 255, 0.18);
+}
+
+.pot::after {
+  content: "";
+  position: absolute;
+  bottom: 42px;
+  border-radius: 999px;
+  background: rgba(8, 46, 27, 0.16);
+}
+
+.pot-tall {
+  width: 104px;
+  height: 132px;
+}
+
+.pot-tall::before {
+  width: 74px;
+  height: 58px;
+}
+
+.pot-tall::after {
+  width: 56px;
+  height: 12px;
+}
+
+.pot-round {
+  width: 88px;
+  height: 104px;
+}
+
+.pot-round::before {
+  width: 62px;
+  height: 48px;
+  border-radius: 20px 20px 22px 22px;
+}
+
+.pot-round::after {
+  width: 44px;
+  height: 10px;
+}
+
+.pot-wide {
+  width: 126px;
+  height: 116px;
+}
+
+.pot-wide::before {
+  width: 92px;
+  height: 52px;
+}
+
+.pot-wide::after {
+  width: 64px;
+  height: 10px;
+}
+
+.leaf {
+  position: absolute;
+  bottom: 48px;
+  width: 28px;
+  background: linear-gradient(180deg, #9add8c 0%, #1d8d4f 100%);
+  border-radius: 28px 28px 4px 28px;
+  transform-origin: bottom center;
+  box-shadow: inset 0 4px 6px rgba(255, 255, 255, 0.12);
+}
+
+.leaf-left {
+  height: 82px;
+  left: 22px;
+  transform: rotate(-28deg);
+}
+
+.leaf-center {
+  height: 96px;
+  left: 38px;
+  transform: rotate(-2deg);
+}
+
+.leaf-right {
+  height: 78px;
+  right: 20px;
+  transform: rotate(26deg);
+}
+
+.leaf-small-left {
+  height: 60px;
+  left: 20px;
+  transform: rotate(-24deg);
+}
+
+.leaf-small-right {
+  height: 64px;
+  right: 20px;
+  transform: rotate(20deg);
+}
+
+.leaf-wide-left {
+  height: 68px;
+  left: 30px;
+  transform: rotate(-38deg);
+}
+
+.leaf-wide-center {
+  height: 82px;
+  left: 49px;
+  transform: rotate(-8deg);
+}
+
+.leaf-wide-right {
+  height: 66px;
+  right: 28px;
+  transform: rotate(34deg);
+}
+
+.promo-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+.promo-card {
+  padding: 1.3rem;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(223, 177, 96, 0.28), transparent 38%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.06));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.16);
+  color: #f8f5ef;
+  text-align: left;
+  min-height: 190px;
+}
+
+.promo-icon {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1rem;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.promo-icon::before,
+.promo-icon::after {
+  content: "";
+  position: absolute;
+}
+
+.promo-icon-leaf::before {
+  width: 18px;
+  height: 22px;
+  border-radius: 18px 18px 4px 18px;
+  background: linear-gradient(180deg, #a7e58f 0%, #1a8b4b 100%);
+  transform: rotate(-28deg);
+}
+
+.promo-icon-leaf::after {
+  width: 2px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.6);
+  transform: translateY(7px) rotate(-28deg);
+}
+
+.promo-icon-drop::before {
+  width: 18px;
+  height: 24px;
+  border-radius: 50% 50% 58% 58%;
+  background: linear-gradient(180deg, #8be0ff 0%, #2e9efc 100%);
+  transform: rotate(45deg);
+}
+
+.promo-icon-pot::before {
+  width: 18px;
+  height: 18px;
+  left: 9px;
+  top: 7px;
+  border-radius: 18px 18px 4px 18px;
+  background: linear-gradient(180deg, #9add8c 0%, #1d8d4f 100%);
+  transform: rotate(-24deg);
+}
+
+.promo-icon-pot::after {
+  width: 20px;
+  height: 14px;
+  right: 8px;
+  bottom: 9px;
+  border-radius: 5px 5px 8px 8px;
+  background: linear-gradient(180deg, #f3d79c 0%, #c38d4d 100%);
+}
+
+.promo-kicker {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #f3d79c;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.promo-card h3 {
+  margin: 0 0 0.45rem;
+  color: #fff;
+  font-size: 1.08rem;
+}
+
+.promo-card p {
+  margin: 0;
+  color: rgba(248, 245, 239, 0.88);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.logo h1 {
+  font-size: 2.5rem;
+  color: #004d2a;
+  margin: 0 0 2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-intro {
+  margin-bottom: 1.2rem;
+  text-align: left;
+}
+
+.form-intro h3 {
+  margin: 0 0 0.35rem;
+  color: #004d2a;
+  font-size: 1.3rem;
+}
+
+.form-intro p {
+  margin: 0;
+  color: #5f6b60;
+  line-height: 1.5;
+  font-size: 0.94rem;
+}
+
+#registerForm {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+}
+
+#registerForm input {
+  min-width: 0;
+}
+
+#registerForm button {
+  grid-column: 1 / -1;
+}
+
+.switch-link {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.switch-link a {
+  color: #007a3f;
+  text-decoration: none;
+}
+
+.switch-link a:hover {
+  text-decoration: underline;
+  color: #dfb160;
+}
+
+input, select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(91, 120, 100, 0.28);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+}
+
+button {
+  width: auto;
+  padding: 0.85rem 1.2rem;
+  border-radius: 14px;
+  background: #dfb160;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: #007a3f;
+  transform: translateY(-1px);
+}
+
+form button {
+  width: 100%;
+}
+
+button:hover {
+  background: #007a3f;
+}
+
+.notice {
+  margin-top: 1rem;
+  color: #4f7942;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.1rem;
+  background: rgba(244, 214, 223, 0.34);
+  border-radius: 20px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 235, 241, 0.3);
+  backdrop-filter: blur(14px);
+}
+
+.search-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex: 1 1 320px;
+}
+
+#searchInput {
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(255, 238, 244, 0.38);
+  border-radius: 14px;
+  font-size: 1rem;
+  flex: 1;
+  min-width: 200px;
+  background: rgba(255, 255, 255, 0.68);
+}
+
+#filterType {
+  padding: 0.8rem 1rem;
+  border: 1px solid rgba(255, 238, 244, 0.38);
+  border-radius: 14px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.grid {
+  display: grid;
+  gap: 1.4rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.plant-card,
+.task-card {
+  background: rgba(246, 239, 230, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 24px;
+  padding: 1.2rem;
+  box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+  color: #222;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 320px;
+  backdrop-filter: blur(14px);
+}
+
+.plant-card {
+  background:
+    radial-gradient(circle at top right, rgba(232, 170, 189, 0.22), transparent 30%),
+    linear-gradient(180deg, rgba(251, 247, 241, 0.42) 0%, rgba(244, 235, 225, 0.3) 100%);
+}
+
+.plant-card h3,
+.task-card h3 {
+  margin-top: 0;
+}
+
+.plant-icon {
+  margin: 0 auto 1rem;
+  width: 7.2rem;
+  height: 7.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, rgba(255, 245, 248, 0.34), rgba(255, 245, 248, 0.12));
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32);
+}
+
+.plant-visual {
+  position: relative;
+  width: 5.4rem;
+  height: 5.6rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.plant-visual-glow {
+  position: absolute;
+  inset: 0.5rem 0.8rem 1.2rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.32), transparent 72%);
+}
+
+.plant-visual-leaf {
+  position: absolute;
+  bottom: 1.55rem;
+  width: 1.2rem;
+  border-radius: 1.1rem 1.1rem 0.25rem 1.1rem;
+  transform-origin: bottom center;
+  box-shadow: inset 0 0.18rem 0.22rem rgba(255, 255, 255, 0.18);
+}
+
+.plant-visual-leaf-left {
+  left: 0.95rem;
+  height: 2.4rem;
+  transform: rotate(-34deg);
+}
+
+.plant-visual-leaf-center {
+  left: 2.08rem;
+  width: 1.28rem;
+  height: 2.95rem;
+  transform: rotate(-4deg);
+}
+
+.plant-visual-leaf-right {
+  right: 0.92rem;
+  height: 2.3rem;
+  transform: rotate(28deg);
+}
+
+.plant-visual-pot {
+  position: relative;
+  z-index: 1;
+  width: 2.8rem;
+  height: 1.8rem;
+  border-radius: 0.45rem 0.45rem 0.75rem 0.75rem;
+  background: linear-gradient(180deg, #f3d79c 0%, #c98f52 100%);
+  box-shadow: inset 0 0.2rem 0.22rem rgba(255, 255, 255, 0.18);
+}
+
+.plant-visual-pot::before {
+  content: "";
+  position: absolute;
+  left: 0.35rem;
+  right: 0.35rem;
+  top: -0.22rem;
+  height: 0.34rem;
+  border-radius: 999px;
+  background: rgba(90, 58, 34, 0.18);
+}
+
+.plant-visual-indoor .plant-visual-leaf {
+  background: linear-gradient(180deg, #9ae48e 0%, #1b8f4f 100%);
+}
+
+.plant-visual-outdoor .plant-visual-leaf {
+  background: linear-gradient(180deg, #b5ef8e 0%, #3a9a43 100%);
+}
+
+.plant-visual-outdoor .plant-visual-pot {
+  background: linear-gradient(180deg, #efc98a 0%, #bb7a47 100%);
+}
+
+.plant-visual-wide .plant-visual-leaf-left {
+  width: 1.45rem;
+  height: 2.9rem;
+  left: 0.65rem;
+  transform: rotate(-42deg);
+}
+
+.plant-visual-wide .plant-visual-leaf-center {
+  width: 1.55rem;
+  height: 3.25rem;
+  left: 1.9rem;
+}
+
+.plant-visual-wide .plant-visual-leaf-right {
+  width: 1.4rem;
+  height: 2.8rem;
+  right: 0.7rem;
+  transform: rotate(34deg);
+}
+
+.plant-visual-wide .plant-visual-leaf {
+  background: linear-gradient(180deg, #9ce7a4 0%, #217f54 100%);
+}
+
+.plant-visual-cactus .plant-visual-leaf {
+  border-radius: 0.8rem;
+  background: linear-gradient(180deg, #99d86b 0%, #3f8d35 100%);
+}
+
+.plant-visual-cactus .plant-visual-leaf-left {
+  width: 1rem;
+  height: 1.8rem;
+  left: 1.2rem;
+  bottom: 2.15rem;
+  transform: rotate(-28deg);
+}
+
+.plant-visual-cactus .plant-visual-leaf-center {
+  width: 1.3rem;
+  height: 3.2rem;
+  left: 2.02rem;
+  bottom: 1.8rem;
+  transform: rotate(0deg);
+}
+
+.plant-visual-cactus .plant-visual-leaf-right {
+  width: 1rem;
+  height: 1.9rem;
+  right: 1.1rem;
+  bottom: 2.05rem;
+  transform: rotate(24deg);
+}
+
+.plant-visual-cactus .plant-visual-pot {
+  background: linear-gradient(180deg, #f2d0a8 0%, #cf8a58 100%);
+}
+
+.plant-visual-bloom .plant-visual-leaf-left,
+.plant-visual-bloom .plant-visual-leaf-right {
+  width: 0.95rem;
+  height: 1.9rem;
+  bottom: 1.95rem;
+  background: linear-gradient(180deg, #9add8c 0%, #268452 100%);
+}
+
+.plant-visual-bloom .plant-visual-leaf-center {
+  width: 1.55rem;
+  height: 2.35rem;
+  bottom: 2.25rem;
+  left: 1.92rem;
+  border-radius: 50% 50% 45% 45%;
+  background: linear-gradient(180deg, #f8b4c8 0%, #dc6c96 100%);
+  box-shadow:
+    -0.95rem 0.4rem 0 -0.15rem rgba(247, 164, 189, 0.96),
+    0.95rem 0.35rem 0 -0.15rem rgba(247, 164, 189, 0.96);
+}
+
+.plant-visual-bloom .plant-visual-pot {
+  background: linear-gradient(180deg, #f1d5bc 0%, #cc9073 100%);
+}
+
+.plant-visual-hydrangea .plant-visual-leaf-left,
+.plant-visual-hydrangea .plant-visual-leaf-right {
+  width: 0.92rem;
+  height: 1.8rem;
+  bottom: 1.85rem;
+  background: linear-gradient(180deg, #9add8c 0%, #268452 100%);
+}
+
+.plant-visual-hydrangea .plant-visual-leaf-center {
+  width: 1.75rem;
+  height: 1.95rem;
+  left: 1.82rem;
+  bottom: 2.4rem;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #c8b6ff 0%, #8a6fe8 100%);
+  box-shadow:
+    -1.05rem 0.2rem 0 -0.18rem rgba(196, 176, 255, 0.96),
+    1.05rem 0.18rem 0 -0.18rem rgba(196, 176, 255, 0.96),
+    0 -0.68rem 0 -0.14rem rgba(216, 201, 255, 0.96);
+}
+
+.plant-visual-hydrangea .plant-visual-pot {
+  background: linear-gradient(180deg, #e7ccb5 0%, #c38e70 100%);
+}
+
+.plant-visual-lavender .plant-visual-leaf-left,
+.plant-visual-lavender .plant-visual-leaf-right {
+  width: 0.7rem;
+  height: 1.8rem;
+  bottom: 1.8rem;
+  background: linear-gradient(180deg, #a4e18b 0%, #32844e 100%);
+}
+
+.plant-visual-lavender .plant-visual-leaf-center {
+  width: 0.9rem;
+  height: 3.2rem;
+  left: 2.25rem;
+  bottom: 1.65rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #b69cff 0%, #7a63d4 100%);
+  box-shadow:
+    -0.32rem 0.3rem 0 -0.08rem rgba(182, 156, 255, 0.95),
+    0.32rem 0.58rem 0 -0.08rem rgba(182, 156, 255, 0.95),
+    -0.25rem 0.95rem 0 -0.1rem rgba(182, 156, 255, 0.92),
+    0.25rem 1.18rem 0 -0.1rem rgba(182, 156, 255, 0.92);
+}
+
+.plant-visual-lavender .plant-visual-pot {
+  background: linear-gradient(180deg, #efd6bc 0%, #bb8760 100%);
+}
+
+.plant-visual-lily .plant-visual-leaf-left,
+.plant-visual-lily .plant-visual-leaf-right {
+  width: 0.9rem;
+  height: 2.2rem;
+  bottom: 1.95rem;
+  background: linear-gradient(180deg, #a4e495 0%, #2b8652 100%);
+}
+
+.plant-visual-lily .plant-visual-leaf-center {
+  width: 1.2rem;
+  height: 3.1rem;
+  left: 2.12rem;
+  bottom: 1.95rem;
+  border-radius: 52% 52% 38% 38%;
+  background: linear-gradient(180deg, #fff7d8 0%, #f1e4a9 100%);
+  box-shadow:
+    -0.78rem 0.48rem 0 -0.1rem rgba(255, 247, 216, 0.96),
+    0.78rem 0.48rem 0 -0.1rem rgba(255, 247, 216, 0.96);
+}
+
+.plant-visual-lily .plant-visual-pot {
+  background: linear-gradient(180deg, #f1dac1 0%, #c99671 100%);
+}
+
+.plant-visual-daisy .plant-visual-leaf-left,
+.plant-visual-daisy .plant-visual-leaf-right {
+  width: 0.86rem;
+  height: 1.9rem;
+  bottom: 1.85rem;
+  background: linear-gradient(180deg, #9fe28f 0%, #2a8451 100%);
+}
+
+.plant-visual-daisy .plant-visual-leaf-center {
+  width: 1.25rem;
+  height: 1.25rem;
+  left: 2.12rem;
+  bottom: 2.6rem;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffd879 0%, #f2b63f 100%);
+  box-shadow:
+    0 -0.78rem 0 -0.16rem rgba(255, 255, 255, 0.96),
+    0.72rem -0.2rem 0 -0.16rem rgba(255, 255, 255, 0.96),
+    0.72rem 0.45rem 0 -0.16rem rgba(255, 255, 255, 0.96),
+    0 0.88rem 0 -0.16rem rgba(255, 255, 255, 0.96),
+    -0.72rem 0.45rem 0 -0.16rem rgba(255, 255, 255, 0.96),
+    -0.72rem -0.2rem 0 -0.16rem rgba(255, 255, 255, 0.96);
+}
+
+.plant-visual-daisy .plant-visual-pot {
+  background: linear-gradient(180deg, #f0d4bd 0%, #c78863 100%);
+}
+
+.plant-visual-fern .plant-visual-leaf {
+  width: 0.78rem;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #acec9c 0%, #2d8a4f 100%);
+}
+
+.plant-visual-fern .plant-visual-leaf-left {
+  height: 2.8rem;
+  left: 1.3rem;
+  transform: rotate(-52deg);
+}
+
+.plant-visual-fern .plant-visual-leaf-center {
+  height: 3.1rem;
+  left: 2.28rem;
+}
+
+.plant-visual-fern .plant-visual-leaf-right {
+  height: 2.75rem;
+  right: 1.26rem;
+  transform: rotate(46deg);
+}
+
+.plant-visual-stem .plant-visual-leaf {
+  width: 0.72rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #aee88a 0%, #3f9141 100%);
+}
+
+.plant-visual-stem .plant-visual-leaf-left {
+  height: 3.15rem;
+  left: 1.55rem;
+  bottom: 1.7rem;
+  transform: rotate(-6deg);
+}
+
+.plant-visual-stem .plant-visual-leaf-center {
+  height: 3.55rem;
+  left: 2.35rem;
+  bottom: 1.55rem;
+  transform: rotate(2deg);
+}
+
+.plant-visual-stem .plant-visual-leaf-right {
+  height: 3rem;
+  right: 1.55rem;
+  bottom: 1.75rem;
+  transform: rotate(8deg);
+}
+
+.plant-card p,
+.task-card p {
+  margin: 0.75rem 0 1rem;
+  line-height: 1.6;
+  color: #4a4a4a;
+  flex: 1;
+}
+
+.tag {
+  display: inline-flex;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  background: rgba(22, 105, 65, 0.92);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.plant-card h3,
+.task-card h3 {
+  margin-top: 0;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.plant-card button {
+  margin-top: auto;
+  align-self: stretch;
+}
+
+.hidden {
+  display: none !important;
+}
+
+body.catalog-mode #authLayout {
+  display: none !important;
+}
+
+body.catalog-mode #catalogSection {
+  display: block !important;
+}
+
+.user-info {
+  font-weight: 600;
+  color: #244534;
+  padding: 0.7rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.agenda-list {
+  display: grid;
+  gap: 1rem;
+}
+
+footer {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 1rem;
+  color: #f2ead8;
+}
+
+@media (max-width: 700px) {
+  header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .auth-layout {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem 0 1.5rem;
+  }
+
+  .hero-illustration {
+    min-height: 180px;
+  }
+
+  .hero-shelf {
+    gap: 0.8rem;
+    padding-bottom: 22px;
+  }
+
+  .pot-tall {
+    transform: scale(0.84);
+  }
+
+  .pot-round {
+    transform: scale(0.8);
+  }
+
+  .pot-wide {
+    transform: scale(0.86);
+  }
+
+  .promo-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card,
+  .auth-card {
+    padding: 1rem;
+  }
+
+  .auth-card {
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    flex: 1 1 auto;
+    transform: none;
+  }
+
+  #registerForm {
+    grid-template-columns: 1fr;
+  }
+
+  .logo h1 {
+    font-size: 2rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

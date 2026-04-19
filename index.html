@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlantITa</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>" />
+  <link rel="stylesheet" href="styles.css?v=20260419-1802" />
+</head>
+<body class="auth-mode">
+  <div class="page-background" aria-hidden="true"></div>
+  <div class="page-overlay" aria-hidden="true"></div>
+  <header>
+    <div class="brand">PlantITa</div>
+  </header>
+
+  <main>
+    <section id="authLayout" class="auth-layout">
+      <article class="card feature-card">
+        <div class="feature-copy">
+          <span class="promo-kicker">Empieza con PlantITa</span>
+          <h2>Tu rincón verde, más ordenado y fácil de cuidar.</h2>
+          <p>
+            Descubrí plantas, aprendé cuidados útiles y armá tu colección personal
+            con una experiencia simple, clara y linda de usar.
+          </p>
+        </div>
+
+        <div class="hero-illustration" aria-hidden="true">
+          <div class="hero-orb hero-orb-left"></div>
+          <div class="hero-orb hero-orb-right"></div>
+          <div class="hero-shelf">
+            <div class="pot pot-tall">
+              <span class="leaf leaf-left"></span>
+              <span class="leaf leaf-center"></span>
+              <span class="leaf leaf-right"></span>
+            </div>
+            <div class="pot pot-round">
+              <span class="leaf leaf-small-left"></span>
+              <span class="leaf leaf-small-right"></span>
+            </div>
+            <div class="pot pot-wide">
+              <span class="leaf leaf-wide-left"></span>
+              <span class="leaf leaf-wide-center"></span>
+              <span class="leaf leaf-wide-right"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="promo-cards">
+          <article class="promo-card">
+            <div class="promo-icon promo-icon-leaf"></div>
+            <h3>Explora plantas</h3>
+            <p>Encontrá especies de interior y exterior con información clara y fácil de entender.</p>
+          </article>
+          <article class="promo-card">
+            <div class="promo-icon promo-icon-drop"></div>
+            <h3>Aprende cuidados</h3>
+            <p>Accedé a consejos prácticos para regar, ubicar y mantener cada planta saludable.</p>
+          </article>
+          <article class="promo-card">
+            <div class="promo-icon promo-icon-pot"></div>
+            <h3>Arma tu colección</h3>
+            <p>Guardá tus favoritas y empezá a organizar tu mundo verde desde el primer día.</p>
+          </article>
+        </div>
+      </article>
+
+      <section id="authSection" class="card auth-card">
+        <div class="logo">
+          <h1>PlantITa</h1>
+        </div>
+
+        <div id="loginFormContainer">
+          <form id="loginForm">
+            <input type="email" id="loginEmail" placeholder="Email" value="admin@plantita.com" required />
+            <input type="password" id="loginPassword" placeholder="Contraseña" value="admin" required />
+            <button type="button" onclick="handleLogin()">Ingresar</button>
+            <a href="#" id="forgotLink" class="forgot-link">Olvidé contraseña</a>
+          </form>
+          <p class="switch-link">¿No tienes cuenta? <a href="#" id="showRegister">Regístrate</a></p>
+        </div>
+
+        <div id="registerFormContainer" class="hidden">
+          <div class="form-intro">
+            <h3>Crea tu cuenta</h3>
+            <p>Empezá a guardar plantas, descubrir cuidados y armar tu colección.</p>
+          </div>
+          <form id="registerForm">
+            <input type="text" id="registerName" placeholder="Nombre" required />
+            <input type="email" id="registerEmail" placeholder="Email" required />
+            <input type="password" id="registerPassword" placeholder="Contraseña" required />
+            <input type="password" id="registerConfirmPassword" placeholder="Confirmar contraseña" required />
+            <button type="button" onclick="handleRegister()">Crear cuenta</button>
+          </form>
+          <p class="switch-link">¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión</a></p>
+        </div>
+
+        <div id="forgotFormContainer" class="hidden">
+          <form id="forgotForm">
+            <p>Ingresa tu email para recibir un enlace de recuperación.</p>
+            <input type="email" id="forgotEmail" placeholder="Email" required />
+            <button type="button" onclick="handleForgot()">Enviar enlace</button>
+          </form>
+          <p class="switch-link"><a href="#" id="backToLogin">Volver al login</a></p>
+        </div>
+      </section>
+    </section>
+
+    <section id="catalogSection" class="hidden">
+      <div class="toolbar">
+        <div id="userInfo" class="user-info"></div>
+        <div class="search-controls">
+          <input type="text" id="searchInput" placeholder="Buscar planta..." />
+          <select id="filterType">
+            <option value="all">Todos los tipos</option>
+            <option value="interior">Interior</option>
+            <option value="exterior">Exterior</option>
+          </select>
+        </div>
+        <div class="spacer"></div>
+      </div>
+      <div id="plantCards" class="grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>PlantITa &copy; 2026 | Una herramienta para cuidar tus plantas.</p>
+  </footer>
+
+  <script src="js/app.js?v=20260419-1802"></script>
+</body>
+</html>

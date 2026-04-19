@@ -1,0 +1,4 @@
+plantita.db
+*.log
+.DS_Store
+node_modules/
