@@ -28,6 +28,7 @@ $pdo->exec('CREATE TABLE user_plants (
     user_id INTEGER NOT NULL,
     plant_id INTEGER NOT NULL,
     added_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, plant_id),
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(plant_id) REFERENCES plants(id)
 )');
