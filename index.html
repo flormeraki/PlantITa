@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PlantITa</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>" />
-  <link rel="stylesheet" href="styles.css?v=20260419-1802" />
+  <link rel="stylesheet" href="styles.css?v=20260501-sprint4" />
 </head>
 <body class="auth-mode">
   <div class="page-background" aria-hidden="true"></div>
@@ -121,14 +121,41 @@
         <div class="spacer"></div>
         <button id="logoutButton" type="button" class="secondary-button">Cerrar sesion</button>
       </div>
+
+      <section class="agenda-panel card">
+        <div class="agenda-header">
+          <div class="section-heading section-heading-compact">
+            <span class="section-kicker">Agenda</span>
+            <h2>Cuidados del dia</h2>
+            <p id="agendaSummary">Organiza riego, poda y fertilizacion segun tus plantas.</p>
+          </div>
+          <div class="agenda-controls" aria-label="Navegacion de agenda">
+            <button id="prevDayButton" type="button" class="icon-button" title="Dia anterior" aria-label="Dia anterior">&lt;</button>
+            <time id="agendaDateLabel" class="agenda-date"></time>
+            <button id="nextDayButton" type="button" class="icon-button" title="Dia siguiente" aria-label="Dia siguiente">&gt;</button>
+          </div>
+        </div>
+        <div id="agendaList" class="agenda-list"></div>
+        <p id="agendaEmpty" class="empty-state hidden">No hay cuidados pendientes para este dia.</p>
+      </section>
+
       <section class="catalog-layout">
         <div class="catalog-panel">
-          <div class="section-heading">
-            <span class="section-kicker">Catalogo</span>
-            <h2>Descubri y suma nuevas plantas</h2>
-            <p>Explora el catalogo y agrega especies a tu coleccion personal sin duplicados.</p>
-          </div>
-          <div id="plantCards" class="grid"></div>
+          <section class="discover-panel card">
+            <div class="discover-header">
+              <div class="section-heading section-heading-compact">
+                <span class="section-kicker">Catalogo</span>
+                <h2>Descubri nuevas plantas</h2>
+                <p>Explora especies de interior y exterior cuando quieras sumar algo a tu coleccion.</p>
+              </div>
+              <button id="toggleCatalogButton" type="button" class="secondary-button compact-button" aria-expanded="false" aria-controls="plantCards">
+                Ver catalogo
+              </button>
+            </div>
+            <div id="catalogContent" class="catalog-content hidden">
+              <div id="plantCards" class="grid"></div>
+            </div>
+          </section>
         </div>
 
         <aside class="collection-panel card">
@@ -147,12 +174,19 @@
     </section>
   </main>
 
+  <div id="plantDetailModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="plantDetailTitle">
+    <div class="modal-panel card">
+      <button id="closePlantDetail" type="button" class="modal-close" aria-label="Cerrar detalle">x</button>
+      <div id="plantDetailContent"></div>
+    </div>
+  </div>
+
   <footer>
     <p>PlantITa &copy; 2026 | Una herramienta para cuidar tus plantas.</p>
   </footer>
 
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-  <script src="js/app.js?v=20260419-1802"></script>
+  <script src="js/app.js?v=20260501-sprint4"></script>
 </body>
 </html>

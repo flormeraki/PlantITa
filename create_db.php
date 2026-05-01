@@ -8,39 +8,39 @@ if (file_exists($dbPath)) {
 $pdo = new PDO('sqlite:' . $dbPath);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$pdo->exec('CREATE TABLE users (
+$pdo->exec('CREATE TABLE usuarios (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
+    nombre TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    contrasena_hash TEXT NOT NULL,
+    creado_en TEXT DEFAULT CURRENT_TIMESTAMP
 )');
 
-$pdo->exec('CREATE TABLE plants (
+$pdo->exec('CREATE TABLE plantas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    type TEXT NOT NULL,
-    care TEXT NOT NULL
+    nombre TEXT NOT NULL,
+    tipo TEXT NOT NULL,
+    cuidado TEXT NOT NULL
 )');
 
-$pdo->exec('CREATE TABLE user_plants (
+$pdo->exec('CREATE TABLE plantas_usuario (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    plant_id INTEGER NOT NULL,
-    added_at TEXT DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, plant_id),
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(plant_id) REFERENCES plants(id)
+    usuario_id INTEGER NOT NULL,
+    planta_id INTEGER NOT NULL,
+    agregado_en TEXT DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(usuario_id, planta_id),
+    FOREIGN KEY(usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY(planta_id) REFERENCES plantas(id)
 )');
 
-$pdo->exec('CREATE TABLE tasks (
+$pdo->exec('CREATE TABLE tareas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    title TEXT NOT NULL,
-    description TEXT NOT NULL,
-    due_date TEXT NOT NULL,
+    usuario_id INTEGER NOT NULL,
+    titulo TEXT NOT NULL,
+    descripcion TEXT NOT NULL,
+    fecha_vencimiento TEXT NOT NULL,
     completed INTEGER DEFAULT 0,
-    FOREIGN KEY(user_id) REFERENCES users(id)
+    FOREIGN KEY(usuario_id) REFERENCES usuarios(id)
 )');
 
 $plants = [
@@ -66,7 +66,7 @@ $plants = [
     ['name' => 'Lirio', 'type' => 'exterior', 'care' => 'Riego abundante. Sombra.'],
 ];
 
-$stmt = $pdo->prepare('INSERT INTO plants (name, type, care) VALUES (?, ?, ?)');
+$stmt = $pdo->prepare('INSERT INTO plantas (nombre, tipo, cuidado) VALUES (?, ?, ?)');
 foreach ($plants as $plant) {
     $stmt->execute([$plant['name'], $plant['type'], $plant['care']]);
 }
@@ -74,7 +74,7 @@ foreach ($plants as $plant) {
 // Usuario por defecto
 echo "Insertando usuario...\n";
 try {
-    $stmt = $pdo->prepare('INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)');
+    $stmt = $pdo->prepare('INSERT INTO usuarios (nombre, email, contrasena_hash) VALUES (?, ?, ?)');
     $result = $stmt->execute(['admin_flormeraki', 'admin@plantita.com', password_hash('admin', PASSWORD_DEFAULT)]);
     echo "Usuario admin insertado. Result: " . ($result ? 'OK' : 'Fail') . "\n";
 } catch (Exception $e) {

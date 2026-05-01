@@ -1,6 +1,7 @@
 const authSection = document.getElementById('authSection');
 const authLayout = document.getElementById('authLayout');
 const catalogSection = document.getElementById('catalogSection');
+const catalogContent = document.getElementById('catalogContent');
 const plantCards = document.getElementById('plantCards');
 const userInfo = document.getElementById('userInfo');
 const searchInput = document.getElementById('searchInput');
@@ -9,8 +10,18 @@ const myPlantsList = document.getElementById('myPlantsList');
 const myPlantsEmpty = document.getElementById('myPlantsEmpty');
 const myPlantsSummary = document.getElementById('myPlantsSummary');
 const myPlantsCount = document.getElementById('myPlantsCount');
+const agendaList = document.getElementById('agendaList');
+const agendaEmpty = document.getElementById('agendaEmpty');
+const agendaSummary = document.getElementById('agendaSummary');
+const agendaDateLabel = document.getElementById('agendaDateLabel');
+const prevDayButton = document.getElementById('prevDayButton');
+const nextDayButton = document.getElementById('nextDayButton');
+const plantDetailModal = document.getElementById('plantDetailModal');
+const plantDetailContent = document.getElementById('plantDetailContent');
+const closePlantDetail = document.getElementById('closePlantDetail');
 const toast = document.getElementById('toast');
 const logoutButton = document.getElementById('logoutButton');
+const toggleCatalogButton = document.getElementById('toggleCatalogButton');
 
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
@@ -27,6 +38,7 @@ let plants = [];
 let myPlants = [];
 let currentUser = null;
 let toastTimeoutId = null;
+let selectedAgendaDate = new Date();
 
 function showAuthSection(section) {
   loginContainer.classList.add('hidden');
@@ -56,6 +68,15 @@ backToLogin.addEventListener('click', (event) => {
 });
 
 logoutButton.addEventListener('click', handleLogout);
+toggleCatalogButton.addEventListener('click', toggleCatalogContent);
+prevDayButton.addEventListener('click', () => changeAgendaDay(-1));
+nextDayButton.addEventListener('click', () => changeAgendaDay(1));
+closePlantDetail.addEventListener('click', closeDetailModal);
+plantDetailModal.addEventListener('click', (event) => {
+  if (event.target === plantDetailModal) {
+    closeDetailModal();
+  }
+});
 
 registerForm.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -100,6 +121,38 @@ function showToast(message, type = 'success', duration = 3200) {
   toastTimeoutId = window.setTimeout(() => {
     toast.className = 'toast hidden';
   }, duration);
+}
+
+function toggleCatalogContent() {
+  const isHidden = catalogContent.classList.toggle('hidden');
+  toggleCatalogButton.textContent = isHidden ? 'Ver catalogo' : 'Ocultar catalogo';
+  toggleCatalogButton.setAttribute('aria-expanded', String(!isHidden));
+}
+
+function formatDateValue(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function formatAgendaDate(dateString) {
+  const [year, month, day] = dateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleDateString('es-AR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long'
+  });
+}
+
+function getCareIconClass(type) {
+  const normalized = (type || '').toLowerCase();
+
+  if (normalized.includes('riego')) return 'care-icon-water';
+  if (normalized.includes('poda')) return 'care-icon-prune';
+  if (normalized.includes('fertiliz')) return 'care-icon-feed';
+  return 'care-icon-default';
 }
 
 async function handleRegister() {
@@ -171,12 +224,19 @@ function resetCatalogState() {
   currentUser = null;
   userInfo.textContent = '';
   plantCards.innerHTML = '';
+  catalogContent.classList.add('hidden');
+  toggleCatalogButton.textContent = 'Ver catalogo';
+  toggleCatalogButton.setAttribute('aria-expanded', 'false');
   myPlantsList.innerHTML = '';
+  agendaList.innerHTML = '';
   myPlantsSummary.textContent = 'Todavia no agregaste plantas a tu coleccion.';
   myPlantsCount.textContent = '0';
   myPlantsEmpty.classList.remove('hidden');
+  agendaSummary.textContent = 'Organiza riego, poda y fertilizacion segun tus plantas.';
+  agendaEmpty.classList.remove('hidden');
   searchInput.value = '';
   filterType.value = 'all';
+  selectedAgendaDate = new Date();
 }
 
 function showLoggedOutUI() {
@@ -327,6 +387,7 @@ async function loadMyPlants() {
   if (!result.success || !myPlantsList) return;
 
   myPlants = result.plants || [];
+  await loadCareSchedule();
 
   if (!myPlants.length) {
     myPlantsList.innerHTML = '';
@@ -343,22 +404,117 @@ async function loadMyPlants() {
 
   myPlantsList.innerHTML = myPlants.map((plant) => `
     <article class="collection-item">
-      <div class="collection-thumb">${renderPlantIllustration(plant.type, plant.name)}</div>
+      <button type="button" class="collection-thumb collection-thumb-button" onclick="showPlantDetail(${plant.id})" aria-label="Ver detalle de ${plant.name}">
+        ${renderPlantIllustration(plant.type, plant.name)}
+      </button>
       <div class="collection-body">
-        <h3>${plant.name}</h3>
+        <h3><button type="button" class="link-button" onclick="showPlantDetail(${plant.id})">${plant.name}</button></h3>
         <div class="collection-meta">
           <span class="tag">${plant.type}</span>
           <span class="collection-care">${plant.care}</span>
         </div>
       </div>
       <div class="collection-side">
-        <span class="status-pill">${plant.status || 'Activa'}</span>
+        <span class="status-pill ${plant.status === 'OK' ? 'status-ok' : 'status-attention'}">${plant.status || 'OK'}</span>
+        <span class="status-detail">${plant.status_detail || 'Sin tareas pendientes hoy'}</span>
         <button type="button" class="collection-remove" onclick="removePlant(${plant.id})">Quitar</button>
       </div>
     </article>
   `).join('');
 
   renderPlantCards();
+}
+
+async function loadCareSchedule() {
+  if (!agendaList) return;
+
+  const date = formatDateValue(selectedAgendaDate);
+  agendaDateLabel.textContent = formatAgendaDate(date);
+  agendaDateLabel.dateTime = date;
+
+  const result = await sendRequest('get_care_schedule', { date });
+  if (!result.success) {
+    agendaList.innerHTML = '';
+    agendaEmpty.classList.remove('hidden');
+    agendaEmpty.textContent = result.message || 'No se pudo cargar la agenda.';
+    return;
+  }
+
+  const tasks = result.tasks || [];
+  const today = formatDateValue(new Date());
+
+  agendaSummary.textContent = date === today
+    ? 'Tareas destacadas para hoy.'
+    : 'Cuidados programados para la fecha seleccionada.';
+
+  if (!tasks.length) {
+    agendaList.innerHTML = '';
+    agendaEmpty.textContent = 'No hay cuidados pendientes para este dia.';
+    agendaEmpty.classList.remove('hidden');
+    return;
+  }
+
+  agendaEmpty.classList.add('hidden');
+  agendaList.innerHTML = tasks.map((task) => `
+    <article class="agenda-item ${task.is_today ? 'agenda-item-today' : ''}">
+      <div class="care-icon ${getCareIconClass(task.type)}" aria-hidden="true"></div>
+      <div class="agenda-item-body">
+        <h3>${task.type}</h3>
+        <p>${task.plant_name} · ${task.description}</p>
+        <span>Frecuencia: cada ${task.frequency_days} dia${Number(task.frequency_days) === 1 ? '' : 's'}</span>
+      </div>
+      <button type="button" class="agenda-plant-link" onclick="showPlantDetail(${task.plant_id})">Detalle</button>
+    </article>
+  `).join('');
+}
+
+function changeAgendaDay(offset) {
+  selectedAgendaDate.setDate(selectedAgendaDate.getDate() + offset);
+  loadCareSchedule();
+}
+
+window.showPlantDetail = async function showPlantDetail(plantId) {
+  const localPlant = myPlants.find((plant) => Number(plant.id) === Number(plantId));
+  const result = await sendRequest('get_plant_cares', { plant_id: plantId });
+
+  if (!result.success) {
+    showToast(result.message || 'No se pudo abrir el detalle', 'error');
+    return;
+  }
+
+  const plant = result.plant || localPlant;
+  const cares = result.cares || [];
+
+  plantDetailContent.innerHTML = `
+    <div class="plant-detail-head">
+      <div class="collection-thumb">${renderPlantIllustration(plant.type, plant.name)}</div>
+      <div>
+        <span class="section-kicker">Detalle</span>
+        <h2 id="plantDetailTitle">${plant.name}</h2>
+        <div class="collection-meta">
+          <span class="tag">${plant.type}</span>
+          <span class="status-pill ${plant.status === 'OK' ? 'status-ok' : 'status-attention'}">${plant.status || 'OK'}</span>
+        </div>
+      </div>
+    </div>
+    <p class="plant-detail-care">${plant.care}</p>
+    <h3>Proximos cuidados</h3>
+    <div class="detail-care-list">
+      ${cares.length ? cares.map((care) => `
+        <article class="detail-care-item">
+          <strong>${care.type}</strong>
+          <span>${formatAgendaDate(care.date)}</span>
+          <small>Cada ${care.frequency_days} dia${Number(care.frequency_days) === 1 ? '' : 's'}</small>
+        </article>
+      `).join('') : '<p class="empty-state">No hay cuidados proximos registrados.</p>'}
+    </div>
+  `;
+
+  plantDetailModal.classList.remove('hidden');
+};
+
+function closeDetailModal() {
+  plantDetailModal.classList.add('hidden');
 }
 
 async function checkSession() {

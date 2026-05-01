@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 $dbPath = __DIR__ . '/plantita.db';
 $pdo = new PDO('sqlite:' . $dbPath);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$pdo->exec('PRAGMA foreign_keys = ON');
 
 $name = trim($_POST['name'] ?? '');
 $email = trim($_POST['email'] ?? '');
@@ -20,7 +21,7 @@ if (empty($name) || empty($email) || empty($password)) {
     exit;
 }
 
-$stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
+$stmt = $pdo->prepare('SELECT id FROM usuarios WHERE email = ?');
 $stmt->execute([$email]);
 if ($stmt->fetch()) {
     echo json_encode(['success' => false, 'message' => 'El correo ya está registrado.']);
@@ -28,7 +29,7 @@ if ($stmt->fetch()) {
 }
 
 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-$stmt = $pdo->prepare('INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)');
+$stmt = $pdo->prepare('INSERT INTO usuarios (nombre, email, contrasena_hash) VALUES (?, ?, ?)');
 $stmt->execute([$name, $email, $passwordHash]);
 $userId = $pdo->lastInsertId();
 

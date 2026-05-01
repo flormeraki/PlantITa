@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 $dbPath = __DIR__ . '/plantita.db';
 $pdo = new PDO('sqlite:' . $dbPath);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$pdo->exec('PRAGMA foreign_keys = ON');
 
 $email = trim($_POST['email'] ?? '');
 $password = trim($_POST['password'] ?? '');
@@ -19,15 +20,15 @@ if (empty($email) || empty($password)) {
     exit;
 }
 
-$stmt = $pdo->prepare('SELECT id, name, email, password_hash FROM users WHERE email = ?');
+$stmt = $pdo->prepare('SELECT id, nombre AS name, email, contrasena_hash FROM usuarios WHERE email = ?');
 $stmt->execute([$email]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$user || !password_verify($password, $user['password_hash'])) {
+if (!$user || !password_verify($password, $user['contrasena_hash'])) {
     echo json_encode(['success' => false, 'message' => 'Credenciales inválidas.']);
     exit;
 }
 
-unset($user['password_hash']);
+unset($user['contrasena_hash']);
 $_SESSION['user'] = $user;
 echo json_encode(['success' => true, 'user' => $user]);

@@ -587,6 +587,47 @@ button:hover {
   min-width: 0;
 }
 
+.discover-panel {
+  padding: 1rem;
+  background:
+    radial-gradient(circle at top right, rgba(232, 170, 189, 0.16), transparent 28%),
+    linear-gradient(180deg, rgba(251, 247, 241, 0.52) 0%, rgba(244, 235, 225, 0.34) 100%);
+}
+
+.discover-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.discover-header .section-heading {
+  margin-bottom: 0;
+}
+
+.discover-header .section-heading h2 {
+  margin: 0.12rem 0 0.25rem;
+  font-size: 1.35rem;
+}
+
+.discover-header .section-heading p {
+  max-width: 36rem;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.catalog-content {
+  margin-top: 1rem;
+}
+
+.compact-button {
+  flex: 0 0 auto;
+  padding: 0.58rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+
 .collection-panel {
   position: sticky;
   top: 1.25rem;
@@ -1126,6 +1167,8 @@ button:hover {
 }
 
 .collection-thumb {
+  border: 0;
+  padding: 0;
   width: 4rem;
   height: 4rem;
   display: flex;
@@ -1133,6 +1176,14 @@ button:hover {
   justify-content: center;
   border-radius: 18px;
   background: radial-gradient(circle at top, rgba(255, 245, 248, 0.56), rgba(255, 245, 248, 0.22));
+}
+
+.collection-thumb-button {
+  cursor: pointer;
+}
+
+.collection-thumb-button:hover {
+  background: radial-gradient(circle at top, rgba(255, 245, 248, 0.74), rgba(231, 244, 229, 0.36));
 }
 
 .collection-thumb .plant-visual {
@@ -1162,6 +1213,22 @@ button:hover {
   color: #20362a;
 }
 
+.link-button {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #20362a;
+  font: inherit;
+  text-align: left;
+}
+
+.link-button:hover {
+  background: transparent;
+  color: #0c6b3a;
+  transform: none;
+  text-decoration: underline;
+}
+
 .collection-care {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -1178,6 +1245,7 @@ button:hover {
   align-items: flex-end;
   gap: 0.55rem;
   align-self: start;
+  max-width: 9rem;
 }
 
 .collection-remove {
@@ -1192,6 +1260,23 @@ button:hover {
 .collection-remove:hover {
   background: #8e3448;
   color: #fff;
+}
+
+.status-ok {
+  background: rgba(12, 107, 58, 0.14);
+  color: #0c6b3a;
+}
+
+.status-attention {
+  background: rgba(223, 177, 96, 0.24);
+  color: #7a5424;
+}
+
+.status-detail {
+  color: #56675c;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  text-align: right;
 }
 
 .empty-state,
@@ -1261,6 +1346,246 @@ body.catalog-mode #catalogSection {
 .agenda-list {
   display: grid;
   gap: 1rem;
+}
+
+.agenda-panel {
+  margin: 0 0 1.5rem;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at top left, rgba(232, 170, 189, 0.18), transparent 30%),
+    linear-gradient(180deg, rgba(251, 247, 241, 0.52) 0%, rgba(244, 235, 225, 0.36) 100%);
+}
+
+.agenda-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.agenda-header .section-heading {
+  margin-bottom: 0;
+}
+
+.agenda-header .section-heading h2 {
+  margin: 0.12rem 0 0.2rem;
+  font-size: 1.35rem;
+}
+
+.agenda-header .section-heading p {
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.agenda-controls {
+  display: grid;
+  grid-template-columns: 2.2rem minmax(10rem, 1fr) 2.2rem;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.icon-button {
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  border-radius: 12px;
+  background: rgba(12, 107, 58, 0.9);
+}
+
+.agenda-date {
+  min-height: 2.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.52);
+  color: #244534;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.agenda-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: #20362a;
+}
+
+.agenda-item-today {
+  border-color: rgba(223, 177, 96, 0.78);
+  box-shadow: inset 4px 0 0 #dfb160, 0 14px 26px rgba(0, 0, 0, 0.08);
+}
+
+.care-icon {
+  position: relative;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 12px;
+  background: rgba(12, 107, 58, 0.12);
+}
+
+.care-icon::before,
+.care-icon::after {
+  content: "";
+  position: absolute;
+}
+
+.care-icon-water::before {
+  left: 0.74rem;
+  top: 0.5rem;
+  width: 0.82rem;
+  height: 1.08rem;
+  border-radius: 50% 50% 58% 58%;
+  background: linear-gradient(180deg, #8be0ff 0%, #2e9efc 100%);
+  transform: rotate(45deg);
+}
+
+.care-icon-prune::before,
+.care-icon-prune::after {
+  width: 1.12rem;
+  height: 0.18rem;
+  left: 0.6rem;
+  top: 1.08rem;
+  border-radius: 999px;
+  background: #0c6b3a;
+}
+
+.care-icon-prune::before {
+  transform: rotate(38deg);
+}
+
+.care-icon-prune::after {
+  transform: rotate(-38deg);
+}
+
+.care-icon-feed::before {
+  left: 0.61rem;
+  top: 0.48rem;
+  width: 1.08rem;
+  height: 1.32rem;
+  border-radius: 0.35rem 0.35rem 0.7rem 0.7rem;
+  background: linear-gradient(180deg, #f3d79c 0%, #c98f52 100%);
+}
+
+.care-icon-feed::after {
+  left: 0.93rem;
+  top: 0.25rem;
+  width: 0.44rem;
+  height: 0.38rem;
+  border-radius: 0.2rem;
+  background: #0c6b3a;
+}
+
+.care-icon-default::before {
+  left: 0.7rem;
+  top: 0.65rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+  background: #0c6b3a;
+}
+
+.agenda-item-body h3 {
+  margin: 0 0 0.15rem;
+  font-size: 0.98rem;
+}
+
+.agenda-item-body p {
+  margin: 0 0 0.12rem;
+  color: #4f5d54;
+  line-height: 1.3;
+  font-size: 0.9rem;
+}
+
+.agenda-item-body span {
+  color: #6d7a70;
+  font-size: 0.8rem;
+}
+
+.agenda-plant-link {
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(0, 77, 42, 0.9);
+  font-size: 0.84rem;
+  white-space: nowrap;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(6, 24, 15, 0.58);
+  backdrop-filter: blur(8px);
+}
+
+.modal-panel {
+  position: relative;
+  width: min(620px, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  background: rgba(251, 247, 241, 0.92);
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border-radius: 999px;
+  background: rgba(142, 52, 72, 0.12);
+  color: #8e3448;
+}
+
+.plant-detail-head {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding-right: 2.8rem;
+}
+
+.plant-detail-head h2 {
+  margin: 0.35rem 0 0.5rem;
+  color: #20362a;
+}
+
+.plant-detail-care {
+  margin: 1rem 0;
+  color: #4f5d54;
+  line-height: 1.6;
+}
+
+.detail-care-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.detail-care-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25rem 1rem;
+  padding: 0.85rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.56);
+  color: #20362a;
+}
+
+.detail-care-item small {
+  grid-column: 1 / -1;
+  color: #6d7a70;
 }
 
 footer {
@@ -1342,9 +1667,48 @@ footer {
     grid-template-columns: 1fr;
   }
 
+  .discover-header {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .compact-button {
+    width: 100%;
+  }
+
   .collection-panel {
     position: static;
     max-height: none;
+  }
+
+  .collection-item,
+  .agenda-item {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .collection-side {
+    grid-column: 1 / -1;
+    align-items: flex-start;
+    max-width: none;
+  }
+
+  .status-detail {
+    text-align: left;
+  }
+
+  .agenda-header {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .agenda-controls {
+    width: 100%;
+    grid-template-columns: 2.2rem minmax(0, 1fr) 2.2rem;
+  }
+
+  .agenda-plant-link {
+    grid-column: 1 / -1;
+    justify-self: stretch;
   }
 
   .toast {
