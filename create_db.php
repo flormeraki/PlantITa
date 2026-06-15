@@ -33,6 +33,18 @@ $pdo->exec('CREATE TABLE plantas_usuario (
     FOREIGN KEY(planta_id) REFERENCES plantas(id)
 )');
 
+$pdo->exec('CREATE TABLE plant_care_history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario_id INTEGER NOT NULL,
+    planta_id INTEGER NOT NULL,
+    tipo TEXT NOT NULL,
+    evento TEXT NOT NULL,
+    detalles TEXT DEFAULT "",
+    fecha TEXT NOT NULL,
+    FOREIGN KEY(usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY(planta_id) REFERENCES plantas(id)
+)');
+
 $pdo->exec('CREATE TABLE tareas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     usuario_id INTEGER NOT NULL,

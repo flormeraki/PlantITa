@@ -6,6 +6,7 @@ const plantCards = document.getElementById('plantCards');
 const userInfo = document.getElementById('userInfo');
 const searchInput = document.getElementById('searchInput');
 const filterType = document.getElementById('filterType');
+const filterDifficulty = document.getElementById('filterDifficulty');
 const myPlantsList = document.getElementById('myPlantsList');
 const myPlantsEmpty = document.getElementById('myPlantsEmpty');
 const myPlantsSummary = document.getElementById('myPlantsSummary');
@@ -14,6 +15,21 @@ const agendaList = document.getElementById('agendaList');
 const agendaEmpty = document.getElementById('agendaEmpty');
 const agendaSummary = document.getElementById('agendaSummary');
 const agendaDateLabel = document.getElementById('agendaDateLabel');
+const agendaPanel = document.getElementById('agendaPanel');
+const alertsSection = document.getElementById('alertsSection');
+const alertsList = document.getElementById('alertsList');
+const alertsEmpty = document.getElementById('alertsEmpty');
+const alertsSummary = document.getElementById('alertsSummary');
+const alertsBadge = document.getElementById('alertsBadge');
+const recommendationsSection = document.getElementById('recommendationsSection');
+const recommendationsList = document.getElementById('recommendationsList');
+const recommendationsEmpty = document.getElementById('recommendationsEmpty');
+const seasonalOverviewList = document.getElementById('seasonalOverviewList');
+const seasonalOverviewEmpty = document.getElementById('seasonalOverviewEmpty');
+const seasonalOverviewSummary = document.getElementById('seasonalOverviewSummary');
+const currentSeasonBadge = document.getElementById('currentSeasonBadge');
+const viewTodayCareButton = document.getElementById('viewTodayCareButton');
+const closeAgendaButton = document.getElementById('closeAgendaButton');
 const prevDayButton = document.getElementById('prevDayButton');
 const nextDayButton = document.getElementById('nextDayButton');
 const plantDetailModal = document.getElementById('plantDetailModal');
@@ -39,6 +55,7 @@ let myPlants = [];
 let currentUser = null;
 let toastTimeoutId = null;
 let selectedAgendaDate = new Date();
+let currentPlantDetail = null;
 
 function showAuthSection(section) {
   loginContainer.classList.add('hidden');
@@ -69,6 +86,40 @@ backToLogin.addEventListener('click', (event) => {
 
 logoutButton.addEventListener('click', handleLogout);
 toggleCatalogButton.addEventListener('click', toggleCatalogContent);
+
+if (viewTodayCareButton) {
+  viewTodayCareButton.addEventListener('click', () => {
+    selectedAgendaDate = new Date();
+    showToast('Abriendo agenda del día...', 'success', 1800);
+
+    const agendaPanelRef = document.getElementById('agendaPanel') || document.querySelector('.agenda-panel');
+    if (agendaPanelRef) {
+      agendaPanelRef.classList.remove('hidden');
+    }
+
+    if (catalogSection && catalogSection.classList.contains('hidden')) {
+      catalogSection.classList.remove('hidden');
+    }
+
+    loadCareSchedule();
+
+    if (agendaPanelRef) {
+      agendaPanelRef.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      agendaPanelRef.classList.add('focus-ring');
+      window.setTimeout(() => agendaPanelRef.classList.remove('focus-ring'), 1400);
+    }
+  });
+}
+
+if (closeAgendaButton) {
+  closeAgendaButton.addEventListener('click', () => {
+    if (agendaPanel) {
+      agendaPanel.classList.add('hidden');
+    }
+    showToast('Agenda cerrada. Presiona "Ver cuidados del día" para volver a abrirla.', 'info', 3200);
+  });
+}
+
 prevDayButton.addEventListener('click', () => changeAgendaDay(-1));
 nextDayButton.addEventListener('click', () => changeAgendaDay(1));
 closePlantDetail.addEventListener('click', closeDetailModal);
@@ -90,6 +141,7 @@ forgotForm.addEventListener('submit', async (event) => {
 
 searchInput.addEventListener('input', renderPlantCards);
 filterType.addEventListener('change', renderPlantCards);
+filterDifficulty.addEventListener('change', renderPlantCards);
 
 async function sendRequest(endpoint, data = {}) {
   const target = endpoint.endsWith('.php') ? endpoint : 'api.php';
@@ -153,6 +205,165 @@ function getCareIconClass(type) {
   if (normalized.includes('poda')) return 'care-icon-prune';
   if (normalized.includes('fertiliz')) return 'care-icon-feed';
   return 'care-icon-default';
+}
+
+function getRecommendationMessage(recommendation) {
+  if (typeof recommendation === 'object' && recommendation !== null) {
+    return recommendation.message || String(recommendation);
+  }
+  return String(recommendation);
+}
+
+function renderDifficultyBadge(difficulty) {
+  if (!difficulty) return '';
+
+  return `
+    <span class="difficulty-badge difficulty-${difficulty.level}" title="${difficulty.experience}">
+      Dificultad: ${difficulty.label}
+    </span>
+  `;
+}
+
+function renderDifficultyDetail(difficulty) {
+  if (!difficulty) return '';
+
+  return `
+    <section class="difficulty-detail difficulty-detail-${difficulty.level}">
+      <div class="difficulty-detail-head">
+        <div>
+          <span class="section-kicker">Nivel de dificultad</span>
+          <h3>${difficulty.label}</h3>
+        </div>
+        <div class="difficulty-level-dots" aria-label="${difficulty.score} de 3">
+          ${[1, 2, 3].map((level) => `<span class="${level <= difficulty.score ? 'active' : ''}"></span>`).join('')}
+        </div>
+      </div>
+      <strong>${difficulty.experience}</strong>
+      <p>${difficulty.description}</p>
+      ${difficulty.reasons?.length ? `
+        <ul>
+          ${difficulty.reasons.map((reason) => `<li>${reason}</li>`).join('')}
+        </ul>
+      ` : ''}
+    </section>
+  `;
+}
+
+function renderSeasonalCare(seasonalCare, selectedSeason) {
+  if (!seasonalCare || !seasonalCare.seasons) return '';
+
+  const seasons = seasonalCare.seasons;
+  const activeKey = seasons[selectedSeason]
+    ? selectedSeason
+    : seasonalCare.current_season;
+  const activeSeason = seasons[activeKey];
+
+  if (!activeSeason) return '';
+
+  return `
+    <section class="seasonal-care-section">
+      <div class="seasonal-care-heading">
+        <div>
+          <span class="section-kicker">Cuidados por temporada</span>
+          <h3>Cuidados estacionales</h3>
+        </div>
+        <span class="season-current-label">Hemisferio sur</span>
+      </div>
+      <div class="season-tabs" role="tablist" aria-label="Seleccionar temporada">
+        ${Object.values(seasons).map((season) => `
+          <button
+            type="button"
+            class="season-tab ${season.key === activeKey ? 'season-tab-active' : ''}"
+            role="tab"
+            aria-selected="${season.key === activeKey}"
+            onclick="selectPlantSeason('${season.key}')"
+          >
+            ${season.name}
+            ${season.is_current ? '<small>Actual</small>' : ''}
+          </button>
+        `).join('')}
+      </div>
+      <div class="season-care-panel" role="tabpanel">
+        <div class="season-care-summary">
+          <strong>${activeSeason.name}</strong>
+          <p>${activeSeason.summary}</p>
+        </div>
+        <div class="season-care-grid">
+          ${activeSeason.cares.map((care) => `
+            <article class="season-care-item">
+              <span>${care.category}</span>
+              <p>${care.description}</p>
+            </article>
+          `).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderSeasonalOverview() {
+  if (!seasonalOverviewList) return;
+
+  if (!myPlants.length) {
+    seasonalOverviewList.innerHTML = '';
+    seasonalOverviewEmpty?.classList.remove('hidden');
+    currentSeasonBadge.textContent = 'Temporada actual';
+    seasonalOverviewSummary.textContent = 'Consulta los cuidados adecuados para la estacion actual.';
+    return;
+  }
+
+  const firstSeasonalCare = myPlants.find((plant) => plant.seasonal_care)?.seasonal_care;
+  const currentKey = firstSeasonalCare?.current_season;
+  const currentName = firstSeasonalCare?.seasons?.[currentKey]?.name || 'Temporada actual';
+
+  seasonalOverviewEmpty?.classList.add('hidden');
+  currentSeasonBadge.textContent = `${currentName} actual`;
+  seasonalOverviewSummary.textContent = `Recomendaciones de ${currentName.toLowerCase()} para tus plantas.`;
+  seasonalOverviewList.innerHTML = myPlants.map((plant) => {
+    const seasonalCare = plant.seasonal_care;
+    const season = seasonalCare?.seasons?.[seasonalCare.current_season];
+    const watering = season?.cares?.find((care) => care.category === 'Riego');
+
+    return `
+      <article class="seasonal-overview-item">
+        <div>
+          <span class="tag">${plant.type}</span>
+          <h3>${plant.name}</h3>
+          <p>${watering?.description || season?.summary || 'Consulta sus cuidados estacionales.'}</p>
+        </div>
+        <button type="button" class="secondary-button compact-button" onclick="showPlantDetail(${plant.id})">
+          Ver las 4 temporadas
+        </button>
+      </article>
+    `;
+  }).join('');
+}
+
+window.selectPlantSeason = function selectPlantSeason(seasonKey) {
+  if (!currentPlantDetail?.seasonal_care) return;
+
+  const container = document.getElementById('seasonalCareContainer');
+  if (container) {
+    container.innerHTML = renderSeasonalCare(currentPlantDetail.seasonal_care, seasonKey);
+  }
+};
+
+async function logPlantEvent(plantId, type, event, details = '') {
+  const result = await sendRequest('log_plant_event', {
+    plant_id: plantId,
+    type,
+    event,
+    details
+  });
+
+  if (result.success) {
+    showToast('Historial actualizado.', 'success', 2800);
+    await showPlantDetail(plantId);
+    await loadMyPlants();
+    return;
+  }
+
+  showToast(result.message || 'No se pudo registrar el evento.', 'error');
 }
 
 async function handleRegister() {
@@ -236,6 +447,7 @@ function resetCatalogState() {
   agendaEmpty.classList.remove('hidden');
   searchInput.value = '';
   filterType.value = 'all';
+  filterDifficulty.value = 'all';
   selectedAgendaDate = new Date();
 }
 
@@ -263,7 +475,7 @@ async function handleLogout() {
 }
 
 async function loadPlants() {
-  const result = await sendRequest('get_plantas.php');
+  const result = await sendRequest('get_plants');
   if (!result.success) return;
 
   plants = result.plants || [];
@@ -328,12 +540,14 @@ function renderPlantIllustration(type, name) {
 function renderPlantCards() {
   const query = searchInput.value.toLowerCase();
   const type = filterType.value;
+  const difficulty = filterDifficulty.value;
   const ownedPlantIds = new Set(myPlants.map((plant) => Number(plant.id)));
 
   const filtered = plants.filter((plant) => {
     const matchName = plant.name.toLowerCase().includes(query) || plant.care.toLowerCase().includes(query);
     const matchType = type === 'all' || plant.type === type;
-    return matchName && matchType;
+    const matchDifficulty = difficulty === 'all' || plant.difficulty?.level === difficulty;
+    return matchName && matchType && matchDifficulty;
   });
 
   if (!filtered.length) {
@@ -350,11 +564,17 @@ function renderPlantCards() {
     <article class="plant-card">
       <div class="plant-icon">${renderPlantIllustration(plant.type, plant.name)}</div>
       <h3>${plant.name}</h3>
-      <span class="tag">${plant.type}</span>
+      <div class="plant-badges">
+        <span class="tag">${plant.type}</span>
+        ${renderDifficultyBadge(plant.difficulty)}
+      </div>
       <p>${plant.care}</p>
-      <button onclick="addPlant(${plant.id})" ${ownedPlantIds.has(Number(plant.id)) ? 'disabled' : ''}>
-        ${ownedPlantIds.has(Number(plant.id)) ? 'Ya esta en tu coleccion' : 'Agregar a mi coleccion'}
-      </button>
+      <div class="plant-card-actions">
+        <button type="button" onclick="showPlantDetail(${plant.id})">Ver detalle</button>
+        <button type="button" onclick="addPlant(${plant.id})" ${ownedPlantIds.has(Number(plant.id)) ? 'disabled' : ''}>
+          ${ownedPlantIds.has(Number(plant.id)) ? 'Ya esta en tu coleccion' : 'Agregar a mi coleccion'}
+        </button>
+      </div>
     </article>
   `).join('');
 }
@@ -388,12 +608,15 @@ async function loadMyPlants() {
 
   myPlants = result.plants || [];
   await loadCareSchedule();
+  await loadAlerts();
+  await loadRecommendations();
 
   if (!myPlants.length) {
     myPlantsList.innerHTML = '';
     myPlantsEmpty.classList.remove('hidden');
     myPlantsSummary.textContent = 'Todavia no agregaste plantas a tu coleccion.';
     myPlantsCount.textContent = '0';
+    renderSeasonalOverview();
     renderPlantCards();
     return;
   }
@@ -411,17 +634,22 @@ async function loadMyPlants() {
         <h3><button type="button" class="link-button" onclick="showPlantDetail(${plant.id})">${plant.name}</button></h3>
         <div class="collection-meta">
           <span class="tag">${plant.type}</span>
-          <span class="collection-care">${plant.care}</span>
+          ${renderDifficultyBadge(plant.difficulty)}
         </div>
       </div>
       <div class="collection-side">
         <span class="status-pill ${plant.status === 'OK' ? 'status-ok' : 'status-attention'}">${plant.status || 'OK'}</span>
         <span class="status-detail">${plant.status_detail || 'Sin tareas pendientes hoy'}</span>
-        <button type="button" class="collection-remove" onclick="removePlant(${plant.id})">Quitar</button>
+        ${plant.recommendations && plant.recommendations.length ? `<span class="recommendation-text">${getRecommendationMessage(plant.recommendations[0])}</span>` : ''}
+        <div class="collection-side-actions">
+          <button type="button" class="collection-detail-button compact-button" onclick="showPlantDetail(${plant.id})">Ver cuidados</button>
+          <button type="button" class="collection-remove" onclick="removePlant(${plant.id})">Quitar</button>
+        </div>
       </div>
     </article>
   `).join('');
 
+  renderSeasonalOverview();
   renderPlantCards();
 }
 
@@ -468,6 +696,105 @@ async function loadCareSchedule() {
   `).join('');
 }
 
+function formatAlertDate(dateString) {
+  const today = formatDateValue(new Date());
+  if (dateString === today) {
+    return 'Hoy';
+  }
+  return formatAgendaDate(dateString);
+}
+
+async function loadAlerts() {
+  if (!alertsList) return;
+
+  const result = await sendRequest('get_alerts');
+  const tasks = result.success ? result.tasks || [] : [];
+  const todayCount = tasks.filter((task) => task.is_today).length;
+  const upcomingCount = tasks.filter((task) => !task.is_today).length;
+
+  if (!result.success) {
+    alertsList.innerHTML = '';
+    alertsEmpty.classList.remove('hidden');
+    alertsEmpty.textContent = result.message || 'No se pudieron cargar las alertas de cuidado.';
+    alertsBadge.classList.add('hidden');
+    return;
+  }
+
+  alertsEmpty.classList.add('hidden');
+  alertsBadge.classList.remove('hidden');
+  alertsBadge.textContent = `${todayCount} hoy · ${upcomingCount} proximas`;
+  alertsSummary.textContent = todayCount
+    ? `Tienes ${todayCount} alerta${todayCount === 1 ? '' : 's'} para hoy y ${upcomingCount} proximas.`
+    : upcomingCount
+      ? `No hay tareas para hoy. Hay ${upcomingCount} proximas en la agenda.`
+      : 'No hay alertas de cuidado por ahora. Tu coleccion esta en buen momento.';
+
+  if (!tasks.length) {
+    alertsList.innerHTML = '';
+    alertsBadge.classList.add('hidden');
+    alertsEmpty.classList.remove('hidden');
+    return;
+  }
+
+  alertsList.innerHTML = tasks.map((task) => `
+    <article class="alert-item ${task.is_today ? 'alert-item-today' : ''}">
+      <div class="alert-meta">
+        <strong>${task.type}</strong>
+        <span class="alert-plant">${task.plant_name}</span>
+      </div>
+      <div class="alert-detail">
+        <span>${formatAlertDate(task.date)}</span>
+        <span class="alert-pill">Cada ${task.frequency_days} dia${Number(task.frequency_days) === 1 ? '' : 's'}</span>
+      </div>
+      <button type="button" class="agenda-plant-link" onclick="showPlantDetail(${task.plant_id})">Ver</button>
+    </article>
+  `).join('');
+
+  if (todayCount > 0) {
+    showToast(`Tienes ${todayCount} alerta${todayCount === 1 ? '' : 's'} para hoy.`, 'success', 3600);
+  }
+}
+
+async function loadRecommendations() {
+  if (!recommendationsList) return;
+
+  const result = await sendRequest('get_recommendations');
+  const recommendations = result.success ? result.recommendations || [] : [];
+
+  if (!recommendations.length) {
+    recommendationsSection?.classList?.add('hidden');
+    recommendationsList.innerHTML = '';
+    recommendationsEmpty.classList.remove('hidden');
+    return;
+  }
+
+  recommendationsSection?.classList?.remove('hidden');
+  recommendationsEmpty.classList.add('hidden');
+  recommendationsList.innerHTML = recommendations.map((recommendation) => {
+    const severityClass = recommendation.severity ? ` recommendation-${recommendation.severity}` : '';
+    const icon = recommendation.severity === 'urgent'
+      ? '🔥'
+      : recommendation.severity === 'warning'
+        ? '⚠️'
+        : '💡';
+    const message = getRecommendationMessage(recommendation);
+
+    return `
+      <article class="recommendation-item${severityClass}">
+        <div class="recommendation-text-icon" aria-hidden="true">${icon}</div>
+        <div class="recommendation-body">
+          <div class="recommendation-meta">
+            <strong>${recommendation.plant_name}</strong>
+            <span class="recommendation-pill recommendation-pill-${recommendation.severity}">${recommendation.severity_text}</span>
+          </div>
+          <p>${message}</p>
+        </div>
+        <button type="button" class="agenda-plant-link" onclick="showPlantDetail(${recommendation.plant_id})">Ver</button>
+      </article>
+    `;
+  }).join('');
+}
+
 function changeAgendaDay(offset) {
   selectedAgendaDate.setDate(selectedAgendaDate.getDate() + offset);
   loadCareSchedule();
@@ -484,6 +811,7 @@ window.showPlantDetail = async function showPlantDetail(plantId) {
 
   const plant = result.plant || localPlant;
   const cares = result.cares || [];
+  currentPlantDetail = plant;
 
   plantDetailContent.innerHTML = `
     <div class="plant-detail-head">
@@ -493,18 +821,62 @@ window.showPlantDetail = async function showPlantDetail(plantId) {
         <h2 id="plantDetailTitle">${plant.name}</h2>
         <div class="collection-meta">
           <span class="tag">${plant.type}</span>
+          ${renderDifficultyBadge(plant.difficulty)}
           <span class="status-pill ${plant.status === 'OK' ? 'status-ok' : 'status-attention'}">${plant.status || 'OK'}</span>
         </div>
       </div>
     </div>
     <p class="plant-detail-care">${plant.care}</p>
+    ${renderDifficultyDetail(plant.difficulty)}
+    <div id="seasonalCareContainer">
+      ${renderSeasonalCare(plant.seasonal_care, plant.seasonal_care?.current_season)}
+    </div>
+    <section class="plant-detail-actions">
+      <h3>Registrar acción rápida</h3>
+      <div class="plant-action-buttons">
+        <button type="button" class="secondary-button compact-button" onclick="logPlantEvent(${plant.id}, 'Riego', 'Riego registrado')">Riego</button>
+        <button type="button" class="secondary-button compact-button" onclick="logPlantEvent(${plant.id}, 'Poda', 'Poda realizada')">Poda</button>
+        <button type="button" class="secondary-button compact-button" onclick="logPlantEvent(${plant.id}, 'Fertilización', 'Fertilización aplicada')">Fertilización</button>
+        <button type="button" class="secondary-button compact-button" onclick="logPlantEvent(${plant.id}, 'Estado', 'Actualización de estado de salud')">Estado</button>
+      </div>
+    </section>
+    ${plant.recommendations && plant.recommendations.length ? `
+      <section class="plant-recommendation-section">
+        <h3>Recomendaciones</h3>
+        <ul class="plant-recommendation-list">
+          ${plant.recommendations.map((recommendation) => `<li>${getRecommendationMessage(recommendation)}</li>`).join('')}
+        </ul>
+      </section>
+    ` : ''}
+    <section class="plant-history-section">
+      <h3>Historial de cuidados</h3>
+      <div class="care-history-list">
+        ${plant.history && plant.history.length ? plant.history.map((entry) => `
+          <article class="care-history-item">
+            <div class="history-marker"></div>
+            <div>
+              <div class="history-header">
+                <strong>${entry.tipo}</strong>
+                <span>${formatAgendaDate(entry.fecha.slice(0, 10))}</span>
+              </div>
+              <p>${entry.evento}${entry.detalles ? ` — ${entry.detalles}` : ''}</p>
+            </div>
+          </article>
+        `).join('') : '<p class="empty-state">Aún no hay historial de cuidados para esta planta.</p>'}
+      </div>
+    </section>
     <h3>Proximos cuidados</h3>
     <div class="detail-care-list">
       ${cares.length ? cares.map((care) => `
         <article class="detail-care-item">
-          <strong>${care.type}</strong>
-          <span>${formatAgendaDate(care.date)}</span>
-          <small>Cada ${care.frequency_days} dia${Number(care.frequency_days) === 1 ? '' : 's'}</small>
+          <div class="detail-care-meta">
+            <div>
+              <strong>${care.type}</strong>
+              <span>${formatAgendaDate(care.date)}</span>
+            </div>
+            <small>Cada ${care.frequency_days} dia${Number(care.frequency_days) === 1 ? '' : 's'}</small>
+          </div>
+          <p>${care.description}</p>
         </article>
       `).join('') : '<p class="empty-state">No hay cuidados proximos registrados.</p>'}
     </div>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlantITa - Pago</title>
+  <link rel="stylesheet" href="styles.css?v=20260501-sprint4" />
+</head>
+<body class="catalog-mode">
+  <header>
+    <div class="brand">PlantITa</div>
+  </header>
+
+  <main class="checkout-page">
+    <section class="checkout-card card">
+      <span class="section-kicker">Compra de insumos</span>
+      <h1>Finalizar pago</h1>
+      <p class="checkout-description">Revisa tu pedido y completa el formulario para realizar la compra.</p>
+      <div id="checkoutContent"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>PlantITa &copy; 2026 | Pago simulado de insumos de jardinería.</p>
+  </footer>
+
+  <script>
+    const checkoutContent = document.getElementById('checkoutContent');
+    const stored = localStorage.getItem('plantitaCheckout');
+    const order = stored ? JSON.parse(stored) : null;
+
+    function formatCurrency(value) {
+      return `$${Number(value).toFixed(2)}`;
+    }
+
+    function renderCheckout() {
+      if (!order || !order.product) {
+        checkoutContent.innerHTML = `
+          <p class="empty-state">No se encontró un pedido para procesar.</p>
+          <button type="button" onclick="window.location.href='index.html'">Volver al inicio</button>
+        `;
+        return;
+      }
+
+      const total = order.product.price * order.product.quantity;
+
+      checkoutContent.innerHTML = `
+        <div class="checkout-summary">
+          <div class="checkout-item">
+            <div>
+              <strong>${order.product.name}</strong>
+              <p class="checkout-label">Planta: ${order.plant_name}</p>
+              <p class="checkout-label">Cuidado: ${order.care_type}</p>
+            </div>
+            <div>
+              <strong>${formatCurrency(order.product.price)}</strong>
+              <p class="checkout-label">x ${order.product.quantity}</p>
+            </div>
+          </div>
+          <div class="checkout-total">Total: ${formatCurrency(total)}</div>
+        </div>
+        <form id="paymentForm">
+          <label>Nombre completo</label>
+          <input type="text" id="customerName" required placeholder="Tu nombre" />
+          <label>Email</label>
+          <input type="email" id="customerEmail" required placeholder="tu@email.com" />
+          <label>Metodo de pago</label>
+          <select id="paymentMethod">
+            <option value="tarjeta">Tarjeta de crédito</option>
+            <option value="transferencia">Transferencia bancaria</option>
+          </select>
+          <button type="submit">Pagar ${formatCurrency(total)}</button>
+          <button type="button" class="secondary-button" onclick="window.location.href='index.html'">Cancelar</button>
+        </form>
+        <p class="notice">Esta es una simulacion de pago local. No se envian datos reales.</p>
+      `;
+
+      document.getElementById('paymentForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+        localStorage.removeItem('plantitaCheckout');
+        checkoutContent.innerHTML = `
+          <div class="section-heading">
+            <h2>Compra completada</h2>
+            <p>Gracias por tu pedido. La transacción se ha simulado correctamente.</p>
+          </div>
+          <button type="button" onclick="window.location.href='index.html'">Volver a PlantITa</button>
+        `;
+      });
+    }
+
+    renderCheckout();
+  </script>
+</body>
+</html>

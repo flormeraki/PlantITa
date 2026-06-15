@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PlantITa</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>" />
-  <link rel="stylesheet" href="styles.css?v=20260501-sprint4" />
+  <link rel="stylesheet" href="styles.css?v=20260615-catalog-filters" />
 </head>
 <body class="auth-mode">
   <div class="page-background" aria-hidden="true"></div>
@@ -110,19 +110,10 @@
     <section id="catalogSection" class="hidden">
       <div class="toolbar">
         <div id="userInfo" class="user-info"></div>
-        <div class="search-controls">
-          <input type="text" id="searchInput" placeholder="Buscar planta..." />
-          <select id="filterType">
-            <option value="all">Todos los tipos</option>
-            <option value="interior">Interior</option>
-            <option value="exterior">Exterior</option>
-          </select>
-        </div>
-        <div class="spacer"></div>
         <button id="logoutButton" type="button" class="secondary-button">Cerrar sesion</button>
       </div>
 
-      <section class="agenda-panel card">
+      <section id="agendaPanel" class="agenda-panel card hidden">
         <div class="agenda-header">
           <div class="section-heading section-heading-compact">
             <span class="section-kicker">Agenda</span>
@@ -133,10 +124,52 @@
             <button id="prevDayButton" type="button" class="icon-button" title="Dia anterior" aria-label="Dia anterior">&lt;</button>
             <time id="agendaDateLabel" class="agenda-date"></time>
             <button id="nextDayButton" type="button" class="icon-button" title="Dia siguiente" aria-label="Dia siguiente">&gt;</button>
+            <button id="closeAgendaButton" type="button" class="secondary-button compact-button close-agenda-button" title="Cerrar agenda">Cerrar agenda</button>
           </div>
         </div>
         <div id="agendaList" class="agenda-list"></div>
         <p id="agendaEmpty" class="empty-state hidden">No hay cuidados pendientes para este dia.</p>
+      </section>
+
+      <section id="alertsSection" class="alerts-panel card">
+        <div class="alerts-header">
+          <div class="section-heading section-heading-compact">
+            <span class="section-kicker">Alertas</span>
+            <h2>Cuidados pendientes</h2>
+            <p id="alertsSummary">Revisa tus tareas de hoy y proximas para mantener tus plantas saludables.</p>
+          </div>
+          <div class="alerts-actions">
+            <button id="viewTodayCareButton" type="button" class="secondary-button compact-button">Ver cuidados del día</button>
+            <div id="alertsBadge" class="alerts-badge hidden" aria-live="polite"></div>
+          </div>
+        </div>
+        <div id="alertsList" class="alerts-list"></div>
+        <p id="alertsEmpty" class="empty-state hidden">No hay alertas de cuidado por ahora. Tu coleccion esta en buen momento.</p>
+      </section>
+
+      <section id="seasonalOverviewSection" class="seasonal-overview-panel card">
+        <div class="alerts-header">
+          <div class="section-heading section-heading-compact">
+            <span class="section-kicker">Temporadas</span>
+            <h2>Cuidados por temporada</h2>
+            <p id="seasonalOverviewSummary">Consulta los cuidados adecuados para la estacion actual.</p>
+          </div>
+          <span id="currentSeasonBadge" class="current-season-badge">Temporada actual</span>
+        </div>
+        <div id="seasonalOverviewList" class="seasonal-overview-list"></div>
+        <p id="seasonalOverviewEmpty" class="empty-state hidden">Agrega una planta a tu coleccion para ver sus cuidados por temporada.</p>
+      </section>
+
+      <section id="recommendationsSection" class="recommendations-panel card hidden">
+        <div class="alerts-header">
+          <div class="section-heading section-heading-compact">
+            <span class="section-kicker">Recomendaciones</span>
+            <h2>Consejos inteligentes</h2>
+            <p id="recommendationsSummary">Observa sugerencias personalizadas para cada planta de tu colección.</p>
+          </div>
+        </div>
+        <div id="recommendationsList" class="recommendations-list"></div>
+        <p id="recommendationsEmpty" class="empty-state hidden">No hay recomendaciones en este momento. Tus plantas parecen estar en buen momento.</p>
       </section>
 
       <section class="catalog-layout">
@@ -153,6 +186,20 @@
               </button>
             </div>
             <div id="catalogContent" class="catalog-content hidden">
+              <div class="search-controls catalog-filters" aria-label="Filtros del catalogo">
+                <input type="text" id="searchInput" placeholder="Buscar planta..." />
+                <select id="filterType" aria-label="Filtrar por tipo de planta">
+                  <option value="all">Todos los tipos</option>
+                  <option value="interior">Interior</option>
+                  <option value="exterior">Exterior</option>
+                </select>
+                <select id="filterDifficulty" aria-label="Filtrar por dificultad">
+                  <option value="all">Todas las dificultades</option>
+                  <option value="facil">Facil</option>
+                  <option value="intermedia">Intermedia</option>
+                  <option value="avanzada">Avanzada</option>
+                </select>
+              </div>
               <div id="plantCards" class="grid"></div>
             </div>
           </section>
@@ -165,7 +212,9 @@
               <h2>Tu coleccion</h2>
               <p id="myPlantsSummary">Todavia no agregaste plantas a tu coleccion.</p>
             </div>
-            <div id="myPlantsCount" class="collection-count">0</div>
+            <div class="collection-actions">
+              <div id="myPlantsCount" class="collection-count">0</div>
+            </div>
           </div>
           <div id="myPlantsList" class="grid my-plants-grid"></div>
           <p id="myPlantsEmpty" class="empty-state">Cuando agregues una planta desde el catalogo, aparecera aca.</p>
@@ -187,6 +236,6 @@
 
   <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-  <script src="js/app.js?v=20260501-sprint4"></script>
+  <script src="js/app.js?v=20260615-hu12-difficulty"></script>
 </body>
 </html>

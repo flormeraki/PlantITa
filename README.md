@@ -18,6 +18,20 @@ Crear arquitectura, repositorio y subirlo a Github. Permitir al usuario registra
 - Frontend: Pantalla Login, Pantalla Registro, Pantalla Recuperación, Pantalla catálogo (cards simples).
 - Testing: Registro funciona, Login funciona, Catálogo carga desde DB, Recuperación simula envío.
 
+## Sprint 8: Cuidados por temporada
+
+- HU11 - Como usuario, quiero visualizar cuidados diferenciados segun la temporada del ano para aplicar los cuidados adecuados.
+- La estacion actual se calcula para el hemisferio sur.
+- El detalle de cada planta permite consultar verano, otono, invierno y primavera.
+- Cada temporada diferencia recomendaciones de riego, luz, fertilizacion y ambiente.
+
+## HU12: Nivel de dificultad
+
+- Cada planta se clasifica como Facil, Intermedia o Avanzada.
+- El nivel considera frecuencia de riego, humedad, sensibilidad y resistencia.
+- El catalogo permite filtrar plantas por dificultad.
+- El detalle explica para que nivel de experiencia se recomienda cada especie.
+
 ## Estructura
 
 - `index.html` - Interfaz principal
